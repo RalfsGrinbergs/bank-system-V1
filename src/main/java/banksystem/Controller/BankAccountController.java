@@ -4,10 +4,9 @@ import banksystem.Dto.BankAccountDTO;
 import banksystem.Service.BankAccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
@@ -23,4 +22,13 @@ private final BankAccountService bankAccountService;
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(bankAccountService.createAccount(id));
     }
+    @GetMapping
+    public ResponseEntity<List<BankAccountDTO>> findAll() {
+        return ResponseEntity.ok(bankAccountService.findAll());
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<BankAccountDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(bankAccountService.findById(id));
+    }
+
 }

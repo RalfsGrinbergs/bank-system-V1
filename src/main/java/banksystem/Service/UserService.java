@@ -6,6 +6,7 @@ import banksystem.Dto.UserDTO;
 import banksystem.Entity.User;
 import banksystem.Enum.Role;
 import banksystem.Repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,11 @@ private final UserRepository userRepository;
     return users.stream()
             .map(this::toDomainUser).toList();
    }
+    public ResponseUserDTO findById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("There is no user with that id" + id));
+        return toDomainUser(user);
+    }
    private ResponseUserDTO toDomainUser(User user) {
     return new ResponseUserDTO(
             user.getId(),

@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -41,6 +42,16 @@ public class BankAccountService {
         bankAccountRepository.save(AccountToCreate);
         userForAccount.setRole(Role.CLIENT);
         return toDomainBankAccount(AccountToCreate);
+    }
+    public List<BankAccountDTO> findAll() {
+        List<BankAccount> accounts = bankAccountRepository.findAll();
+        return accounts.stream()
+                .map(this::toDomainBankAccount).toList();
+    }
+    public BankAccountDTO findById(Long id) {
+        BankAccount account = bankAccountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("There is not account with that id" + id));
+        return toDomainBankAccount(account);
     }
     private BankAccountDTO toDomainBankAccount(BankAccount bankAccount) {
         return new BankAccountDTO(
