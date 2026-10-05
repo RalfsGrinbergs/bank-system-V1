@@ -63,6 +63,15 @@ public class BankAccount {
 
         this.balance = this.balance.add(sum);
     }
+    public void withdraw(BigDecimal sum) {
+        if (sum.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalStateException("Sum must be positive");
+        }
+        if(sum.compareTo(balance) > 0) {
+            throw new IllegalStateException("Sum is bigger than balance");
+        }
+        this.balance = this.balance.subtract(sum);
+    }
 
 
 }

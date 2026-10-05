@@ -67,4 +67,12 @@ public class BankAccountService {
         accountForDeposit.deposit(sum);
         return toDomainBankAccount(accountForDeposit);
      }
+     @Transactional
+    public BankAccountDTO withdraw(Long id, BigDecimal sum) {
+        BankAccount accountForWithdraw = bankAccountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("There is no account with that id " + id));
+        accountForWithdraw.withdraw(sum);
+        return toDomainBankAccount(accountForWithdraw);
+
+     }
 }
