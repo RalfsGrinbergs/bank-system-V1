@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -30,5 +31,19 @@ private final BankAccountService bankAccountService;
     public ResponseEntity<BankAccountDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(bankAccountService.findById(id));
     }
-
+    @PostMapping("/{id}/deposits")
+    public ResponseEntity<BankAccountDTO> deposit(@PathVariable Long id, @RequestBody BigDecimal sum) {
+        return ResponseEntity.ok(bankAccountService.deposit(id, sum));
+    }
+    @PostMapping("/{id}/withdraws")
+    public ResponseEntity<BankAccountDTO> withdraw(@PathVariable Long id, @RequestBody BigDecimal sum) {
+        return ResponseEntity.ok(bankAccountService.withdraw(id, sum));
+    }
+    @PostMapping("/{id}/transfer/{receiverId}")
+    public ResponseEntity<BankAccountDTO> transfer(
+            @PathVariable Long id,
+            @PathVariable Long receiverId,
+            @RequestBody BigDecimal sum) {
+        return ResponseEntity.ok(bankAccountService.transfer(id, receiverId, sum));
+    }
 }
