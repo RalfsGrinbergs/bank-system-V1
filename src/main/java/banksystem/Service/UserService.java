@@ -9,6 +9,8 @@ import banksystem.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 private final UserRepository userRepository;
@@ -29,6 +31,11 @@ private final UserRepository userRepository;
     return toDomainUser(savedUser);
 
 
+   }
+   public List<ResponseUserDTO> findAll() {
+    List<User> users = userRepository.findAll();
+    return users.stream()
+            .map(this::toDomainUser).toList();
    }
    private ResponseUserDTO toDomainUser(User user) {
     return new ResponseUserDTO(
