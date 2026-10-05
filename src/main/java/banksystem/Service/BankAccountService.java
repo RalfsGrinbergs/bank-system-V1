@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
 
@@ -59,4 +60,11 @@ public class BankAccountService {
 
         );
     }
+    @Transactional
+    public BankAccountDTO deposit(Long id, BigDecimal sum) {
+        BankAccount accountForDeposit = bankAccountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("There is no account with that id " + id));
+        accountForDeposit.deposit(sum);
+        return toDomainBankAccount(accountForDeposit);
+     }
 }

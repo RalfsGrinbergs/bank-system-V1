@@ -54,7 +54,15 @@ public class BankAccount {
         return balance;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+
+
+    public void deposit(BigDecimal sum) {
+        if (sum.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalStateException("Sum is 0 or below");
+        }
+
+        this.balance = this.balance.add(sum);
     }
+
+
 }
