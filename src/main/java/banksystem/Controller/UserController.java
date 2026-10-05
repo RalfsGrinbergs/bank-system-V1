@@ -3,6 +3,8 @@ package banksystem.Controller;
 import banksystem.Dto.ResponseUserDTO;
 import banksystem.Dto.UserDTO;
 import banksystem.Service.UserService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseUserDTO> addUser( @RequestBody UserDTO userToAdd) {
+    public ResponseEntity<ResponseUserDTO> addUser(@Valid @RequestBody UserDTO userToAdd) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.addUser(userToAdd));
     }
@@ -28,7 +30,7 @@ public class UserController {
         return ResponseEntity.ok(userService.findAll());
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseUserDTO> findById(@PathVariable Long id){
+    public ResponseEntity<ResponseUserDTO> findById(@PathVariable @Positive Long id){
         return ResponseEntity.ok(userService.findById(id));
     }
 

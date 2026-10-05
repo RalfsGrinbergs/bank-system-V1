@@ -53,7 +53,11 @@ public class TransactionService {
             transaction.getFromAccount() != null ? transaction.getFromAccount().getAccountNumber() : null,
             transaction.getToAccount() != null ? transaction.getToAccount().getAccountNumber() : null );
     }
-
+    public List<TransactionDTO> findAll() {
+        List<Transactions> transactions = transactionRepository.findAll();
+        return transactions.stream()
+                .map(this::toDomainTransactions).toList();
+    }
 
 
 }

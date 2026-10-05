@@ -2,6 +2,9 @@ package banksystem.Controller;
 
 import banksystem.Dto.BankAccountDTO;
 import banksystem.Service.BankAccountService;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +22,7 @@ private final BankAccountService bankAccountService;
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<BankAccountDTO> createAccount(@PathVariable Long id) {
+    public ResponseEntity<BankAccountDTO> createAccount(@PathVariable @Positive Long id) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(bankAccountService.createAccount(id));
     }
@@ -28,22 +31,26 @@ private final BankAccountService bankAccountService;
         return ResponseEntity.ok(bankAccountService.findAll());
     }
     @GetMapping("/{id}")
-    public ResponseEntity<BankAccountDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<BankAccountDTO> findById(@PathVariable @Positive Long id) {
         return ResponseEntity.ok(bankAccountService.findById(id));
     }
     @PostMapping("/{id}/deposits")
-    public ResponseEntity<BankAccountDTO> deposit(@PathVariable Long id, @RequestBody BigDecimal sum) {
+    public ResponseEntity<BankAccountDTO> deposit(
+            @PathVariable @Positive Long id,
+            @RequestBody @NotNull @Positive @Digits(integer = 15, fraction = 2) BigDecimal sum) {
         return ResponseEntity.ok(bankAccountService.deposit(id, sum));
     }
     @PostMapping("/{id}/withdraws")
-    public ResponseEntity<BankAccountDTO> withdraw(@PathVariable Long id, @RequestBody BigDecimal sum) {
+    public ResponseEntity<BankAccountDTO> withdraw(
+            @PathVariable @Positive Long id,
+            @RequestBody @NotNull @Positive @Digits(integer = 15, fraction = 2) BigDecimal sum) {
         return ResponseEntity.ok(bankAccountService.withdraw(id, sum));
     }
     @PostMapping("/{id}/transfer/{receiverId}")
     public ResponseEntity<BankAccountDTO> transfer(
-            @PathVariable Long id,
-            @PathVariable Long receiverId,
-            @RequestBody BigDecimal sum) {
+            @PathVariable @Positive Long id,
+            @PathVariable @Positive Long receiverId,
+            @RequestBody @NotNull @Positive @Digits(integer = 15, fraction = 2) BigDecimal sum) {
         return ResponseEntity.ok(bankAccountService.transfer(id, receiverId, sum));
     }
 }
