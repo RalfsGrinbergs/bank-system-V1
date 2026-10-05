@@ -1,8 +1,6 @@
 package banksystem.Service;
 
 import banksystem.Dto.BankAccountDTO;
-import banksystem.Dto.ResponseUserDTO;
-import banksystem.Dto.UserDTO;
 import banksystem.Entity.BankAccount;
 import banksystem.Entity.User;
 import banksystem.Enum.Role;
@@ -56,7 +54,9 @@ public class BankAccountService {
     private BankAccountDTO toDomainBankAccount(BankAccount bankAccount) {
         return new BankAccountDTO(
                 bankAccount.getAccountNumber(),
-                bankAccount.getUser().getEmail()
+                bankAccount.getUser().getEmail(),
+                bankAccount.getBalance()
+
         );
     }
 }
