@@ -22,9 +22,9 @@ public class TransactionController {
     public ResponseEntity<List<TransactionDTO>> findAll() {
         return ResponseEntity.ok(transactionService.findAll());
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<List<TransactionDTO>> getAccountTransactions(@PathVariable @Positive Long id) {
-        return ResponseEntity.ok(transactionService.getAccountTransactions(id));
+    @GetMapping("/{accountNumber}")
+    public ResponseEntity<List<TransactionDTO>> getAccountTransactions(@PathVariable @Positive Long accountNumber) {
+        return ResponseEntity.ok(transactionService.getAccountTransactions(accountNumber));
     }
 
 }

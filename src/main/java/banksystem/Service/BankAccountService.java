@@ -7,6 +7,7 @@ import banksystem.Enum.Role;
 import banksystem.Enum.TransactionsType;
 import banksystem.Repository.BankAccountRepository;
 import banksystem.Repository.UserRepository;
+import banksystem.exceptions.RoleException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class BankAccountService {
                 .orElseThrow(() -> new EntityNotFoundException("User is not created"));
 
         if(!(userForAccount.getRole() == Role.USER)) {
-            throw new IllegalStateException("User can't make a account"); // in future change to custom exception
+            throw new RoleException("User can't make a account");
         }
         var AccountToCreate = new BankAccount(
                 userForAccount,
@@ -49,9 +50,10 @@ public class BankAccountService {
         return accounts.stream()
                 .map(this::toDomainBankAccount).toList();
     }
-    public BankAccountDTO findById(Long id) {
-        BankAccount account = bankAccountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("There is not account with that id" + id));
+    public BankAccountDTO findByNumber(Long accountNumber) {
+        BankAccount account = bankAccountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "There is no account with account number " + accountNumber));
         return toDomainBankAccount(account);
     }
     private BankAccountDTO toDomainBankAccount(BankAccount bankAccount) {
@@ -63,9 +65,9 @@ public class BankAccountService {
         );
     }
     @Transactional
-    public BankAccountDTO deposit(Long id, BigDecimal sum) {
-        BankAccount accountForDeposit = bankAccountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("There is no account with that id " + id));
+    public BankAccountDTO deposit(Long accountNumber, BigDecimal sum) {
+        BankAccount accountForDeposit = bankAccountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new EntityNotFoundException("There is no account with that number " + accountNumber));
         accountForDeposit.deposit(sum);
         transactionService.createTransaction(
                 null,
@@ -76,9 +78,10 @@ public class BankAccountService {
         return toDomainBankAccount(accountForDeposit);
      }
      @Transactional
-    public BankAccountDTO withdraw(Long id, BigDecimal sum) {
-        BankAccount accountForWithdraw = bankAccountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("There is no account with that id " + id));
+    public BankAccountDTO withdraw(Long accountNumber, BigDecimal sum) {
+        BankAccount accountForWithdraw = bankAccountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "There is no account with account number " + accountNumber));
         accountForWithdraw.withdraw(sum);
         transactionService.createTransaction(
                 accountForWithdraw,
@@ -91,11 +94,13 @@ public class BankAccountService {
 
      }
      @Transactional
-     public BankAccountDTO transfer(Long id, Long receiverId, BigDecimal sum) {
-        BankAccount sender = bankAccountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("There is no account with that id" + id));
-        BankAccount receiver = bankAccountRepository.findById(receiverId)
-                .orElseThrow(() -> new EntityNotFoundException("There is no account with that id" + receiverId));
+     public BankAccountDTO transfer(Long accountNumber, Long receiverAccountNumber, BigDecimal sum) {
+        BankAccount sender = bankAccountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "There is no account with account number " + accountNumber));
+        BankAccount receiver = bankAccountRepository.findByAccountNumber(receiverAccountNumber)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "There is no account with account number " + receiverAccountNumber));
         sender.transfer(sum, receiver);
          transactionService.createTransaction(
                  sender,

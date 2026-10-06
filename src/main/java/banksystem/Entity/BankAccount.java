@@ -1,5 +1,6 @@
 package banksystem.Entity;
 
+import banksystem.exceptions.TransactionException;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -58,30 +59,30 @@ public class BankAccount {
 
     public void deposit(BigDecimal sum) {
         if (sum.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalStateException("Sum is 0 or below");
+            throw new TransactionException("Sum is 0 or below");
         }
 
         this.balance = this.balance.add(sum);
     }
     public void withdraw(BigDecimal sum) {
         if (sum.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalStateException("Sum must be positive");
+            throw new TransactionException("Sum must be positive");
         }
         if(sum.compareTo(balance) > 0) {
-            throw new IllegalStateException("Sum is bigger than balance");
+            throw new TransactionException("Sum is bigger than balance");
         }
         this.balance = this.balance.subtract(sum);
     }
     public void transfer(BigDecimal sum, BankAccount accountToTransfer) {
 
         if(accountToTransfer.equals(this)) {
-            throw new IllegalStateException("You cant transfer money to yourself");
+            throw new TransactionException("You cant transfer money to yourself");
         }
         if (sum.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalStateException("Sum must be positive");
+            throw new TransactionException("Sum must be positive");
         }
         if(sum.compareTo(balance) > 0) {
-            throw new IllegalStateException("Sum is bigger than balance");
+            throw new TransactionException("Sum is bigger than balance");
         }
 
         this.balance = this.balance.subtract(sum);

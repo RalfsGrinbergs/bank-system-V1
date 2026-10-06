@@ -1,7 +1,6 @@
 package banksystem.service;
 
 import banksystem.Dto.BankAccountDTO;
-import banksystem.Dto.UserDTO;
 import banksystem.Entity.BankAccount;
 import banksystem.Entity.User;
 import banksystem.Enum.Role;
@@ -9,6 +8,8 @@ import banksystem.Repository.BankAccountRepository;
 import banksystem.Repository.UserRepository;
 import banksystem.Service.BankAccountService;
 import banksystem.Service.TransactionService;
+import banksystem.exceptions.RoleException;
+import banksystem.exceptions.TransactionException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 
@@ -59,12 +60,12 @@ public class BankAccountServiceTest {
                 .thenReturn(Optional.of(user));
 
         assertThrows(
-            IllegalStateException.class,
+            RoleException.class,
                 () -> bankAccountService.createAccount(user.getId())
         );
     }
     @Test
-    void findById() {
+    void findByNumber() {
         UserRepository userRepository = mock(UserRepository.class);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         TransactionService transactionService = mock(TransactionService.class);
@@ -74,23 +75,23 @@ public class BankAccountServiceTest {
         BankAccount bankAccount= new BankAccount(
                 user, 23333L
         );
-        when(bankAccountRepository.findById(1L))
+        when(bankAccountRepository.findByAccountNumber(23333L))
                 .thenReturn(Optional.of(bankAccount));
-        BankAccountDTO bankAccountDTO = bankAccountService.findById(1L);
+        BankAccountDTO bankAccountDTO = bankAccountService.findByNumber(23333L);
         assertEquals(23333L, bankAccountDTO.accountNumber());
         assertEquals("email@example.com", bankAccountDTO.userEmail());
     }
     @Test
-    void findByIdNotFound() {
+    void findByNumberNotFound() {
         UserRepository userRepository = mock(UserRepository.class);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         TransactionService transactionService = mock(TransactionService.class);
         BankAccountService bankAccountService = new BankAccountService(bankAccountRepository, userRepository, transactionService);
-        when(bankAccountRepository.findById(1L))
+        when(bankAccountRepository.findByAccountNumber(23333L))
                 .thenReturn(Optional.empty());
         assertThrows(
                 EntityNotFoundException.class,
-                () -> bankAccountService.findById(1L)
+                () -> bankAccountService.findByNumber(23333L)
         );
     }
 
@@ -109,11 +110,11 @@ public class BankAccountServiceTest {
         receiver.setId(2L);
         sender.deposit(new BigDecimal("100.00"));
 
-        when(bankAccountRepository.findById(1L)).thenReturn(Optional.of(sender));
-        when(bankAccountRepository.findById(2L)).thenReturn(Optional.of(receiver));
+        when(bankAccountRepository.findByAccountNumber(11111L)).thenReturn(Optional.of(sender));
+        when(bankAccountRepository.findByAccountNumber(22222L)).thenReturn(Optional.of(receiver));
 
         BigDecimal amount = new BigDecimal("25.00");
-        BankAccountDTO result = bankAccountService.transfer(1L, 2L, amount);
+        BankAccountDTO result = bankAccountService.transfer(11111L, 22222L, amount);
 
         assertEquals(new BigDecimal("75.00"), sender.getBalance());
         assertEquals(new BigDecimal("25.00"), receiver.getBalance());
@@ -133,11 +134,11 @@ public class BankAccountServiceTest {
         account.setId(1L);
         account.deposit(new BigDecimal("100.00"));
 
-        when(bankAccountRepository.findById(1L)).thenReturn(Optional.of(account));
+        when(bankAccountRepository.findByAccountNumber(11111L)).thenReturn(Optional.of(account));
 
         assertThrows(
-                IllegalStateException.class,
-                () -> bankAccountService.transfer(1L, 1L, new BigDecimal("25.00"))
+                TransactionException.class,
+                () -> bankAccountService.transfer(11111L, 11111L, new BigDecimal("25.00"))
         );
 
         assertEquals(new BigDecimal("100.00"), account.getBalance());

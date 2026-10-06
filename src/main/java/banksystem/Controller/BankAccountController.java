@@ -30,27 +30,27 @@ private final BankAccountService bankAccountService;
     public ResponseEntity<List<BankAccountDTO>> findAll() {
         return ResponseEntity.ok(bankAccountService.findAll());
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<BankAccountDTO> findById(@PathVariable @Positive Long id) {
-        return ResponseEntity.ok(bankAccountService.findById(id));
+    @GetMapping("/{accountNumber}")
+    public ResponseEntity<BankAccountDTO> findByAccountNumber(@PathVariable @Positive Long accountNumber) {
+        return ResponseEntity.ok(bankAccountService.findByNumber(accountNumber));
     }
-    @PostMapping("/{id}/deposits")
+    @PostMapping("/{accountNumber}/deposits")
     public ResponseEntity<BankAccountDTO> deposit(
-            @PathVariable @Positive Long id,
+            @PathVariable @Positive Long accountNumber,
             @RequestBody @NotNull @Positive @Digits(integer = 15, fraction = 2) BigDecimal sum) {
-        return ResponseEntity.ok(bankAccountService.deposit(id, sum));
+        return ResponseEntity.ok(bankAccountService.deposit(accountNumber, sum));
     }
-    @PostMapping("/{id}/withdraws")
+    @PostMapping("/{accountNumber}/withdraws")
     public ResponseEntity<BankAccountDTO> withdraw(
-            @PathVariable @Positive Long id,
+            @PathVariable @Positive Long accountNumber,
             @RequestBody @NotNull @Positive @Digits(integer = 15, fraction = 2) BigDecimal sum) {
-        return ResponseEntity.ok(bankAccountService.withdraw(id, sum));
+        return ResponseEntity.ok(bankAccountService.withdraw(accountNumber, sum));
     }
-    @PostMapping("/{id}/transfer/{receiverId}")
+    @PostMapping("/{accountNumber}/transfer/{receiverAccountNumber}")
     public ResponseEntity<BankAccountDTO> transfer(
-            @PathVariable @Positive Long id,
-            @PathVariable @Positive Long receiverId,
+            @PathVariable @Positive Long accountNumber,
+            @PathVariable @Positive Long receiverAccountNumber,
             @RequestBody @NotNull @Positive @Digits(integer = 15, fraction = 2) BigDecimal sum) {
-        return ResponseEntity.ok(bankAccountService.transfer(id, receiverId, sum));
+        return ResponseEntity.ok(bankAccountService.transfer(accountNumber, receiverAccountNumber, sum));
     }
 }
