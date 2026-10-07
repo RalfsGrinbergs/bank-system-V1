@@ -26,7 +26,7 @@ public class UserServiceTest {
         PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
         UserService userService = new UserService(userRepository, passwordEncoder);
         UserDTO userToAdd = new UserDTO(
-                null, "email@example.com",
+                 "email@example.com",
                 "test-password"
         );
         when(userRepository.save(any(User.class)))
