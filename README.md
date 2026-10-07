@@ -122,5 +122,8 @@ On macOS/Linux:
 
 ## Security status
 
-Authentication and authorization have not been implemented yet, and passwords are not encoded yet. This project is for local learning only; do not use real credentials or expose it publicly with real data.
-**Planned:** Password hashing and authentication and authorization with Spring Security.
+Passwords are hashed with BCrypt before being stored in the database. Authentication and authorization have not been implemented yet.
+
+This project is for local learning only; do not use real credentials or expose it publicly with real data.
+
+**Planned:** Authentication and authorization with Spring Security.
