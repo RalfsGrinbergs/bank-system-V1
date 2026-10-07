@@ -7,6 +7,7 @@ import banksystem.Repository.UserRepository;
 import banksystem.Service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -22,7 +23,8 @@ public class UserServiceTest {
     @Test
     void addUserSuccess() {
         UserRepository userRepository = mock(UserRepository.class);
-        UserService userService = new UserService(userRepository);
+        PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
+        UserService userService = new UserService(userRepository, passwordEncoder);
         UserDTO userToAdd = new UserDTO(
                 null, "email@example.com",
                 "test-password"
@@ -39,7 +41,8 @@ public class UserServiceTest {
     @Test
     void findById() {
         UserRepository userRepository = mock(UserRepository.class);
-        UserService userService = new UserService(userRepository);
+        PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
+        UserService userService = new UserService(userRepository, passwordEncoder);
         User userToFind = new User(
                 "email@example.com",
                 "test-password",
@@ -56,7 +59,8 @@ public class UserServiceTest {
     @Test
     void findByIdNotFound() {
         UserRepository userRepository = mock(UserRepository.class);
-        UserService userService = new UserService(userRepository);
+        PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
+        UserService userService = new UserService(userRepository, passwordEncoder);
 
         when(userRepository.findById(2L))
                 .thenReturn(Optional.empty());

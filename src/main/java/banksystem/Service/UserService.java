@@ -8,6 +8,8 @@ import banksystem.Enum.Role;
 import banksystem.Repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +17,10 @@ import java.util.List;
 @Service
 public class UserService {
 private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
+private final PasswordEncoder passwordEncoder;
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
 
     }
     @Transactional
@@ -27,7 +30,7 @@ private final UserRepository userRepository;
         }
     var userToSave = new User(
             userToAdd.email(),
-            userToAdd.password(),
+            passwordEncoder.encode(userToAdd.password()),
             Role.USER
     );
     var savedUser = userRepository.save(userToSave);
