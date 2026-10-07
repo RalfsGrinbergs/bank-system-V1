@@ -22,6 +22,9 @@ private final UserRepository userRepository;
     }
     @Transactional
    public ResponseUserDTO addUser(UserDTO userToAdd) {
+        if (userRepository.findByEmail(userToAdd.email()).isPresent()) {
+            throw new IllegalArgumentException("User with that email already exists"); // in future change with custom exception
+        }
     var userToSave = new User(
             userToAdd.email(),
             userToAdd.password(),
