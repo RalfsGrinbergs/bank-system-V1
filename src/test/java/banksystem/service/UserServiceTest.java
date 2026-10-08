@@ -1,17 +1,16 @@
 package banksystem.service;
 
-import banksystem.Dto.ResponseUserDTO;
-import banksystem.Dto.UserDTO;
-import banksystem.Entity.User;
-import banksystem.Repository.UserRepository;
-import banksystem.Service.UserService;
+import banksystem.dto.ResponseUserDTO;
+import banksystem.dto.UserDTO;
+import banksystem.entity.User;
+import banksystem.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static banksystem.Enum.Role.CLIENT;
+import static banksystem.enums.Role.CLIENT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.junit.jupiter.api.Assertions.assertEquals;

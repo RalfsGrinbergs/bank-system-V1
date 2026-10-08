@@ -1,7 +1,7 @@
-package banksystem.Controller;
+package banksystem.controller;
 
-import banksystem.Dto.BankAccountDTO;
-import banksystem.Service.BankAccountService;
+import banksystem.dto.BankAccountDTO;
+import banksystem.service.BankAccountService;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

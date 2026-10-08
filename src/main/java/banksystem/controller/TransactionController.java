@@ -1,7 +1,7 @@
-package banksystem.Controller;
+package banksystem.controller;
 
-import banksystem.Dto.TransactionDTO;
-import banksystem.Service.TransactionService;
+import banksystem.dto.TransactionDTO;
+import banksystem.service.TransactionService;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

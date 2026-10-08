@@ -1,4 +1,4 @@
-package banksystem.Entity;
+package banksystem.entity;
 
 import banksystem.exceptions.TransactionException;
 import jakarta.persistence.*;

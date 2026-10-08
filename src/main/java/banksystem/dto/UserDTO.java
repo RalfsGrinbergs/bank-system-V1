@@ -1,4 +1,4 @@
-package banksystem.Dto;
+package banksystem.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,6 +1,6 @@
-package banksystem.Dto;
+package banksystem.dto;
 
-import banksystem.Enum.Role;
+import banksystem.enums.Role;
 
 public record ResponseUserDTO(
         Long id,

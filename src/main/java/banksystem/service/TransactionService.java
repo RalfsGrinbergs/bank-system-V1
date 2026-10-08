@@ -1,10 +1,10 @@
-package banksystem.Service;
+package banksystem.service;
 
-import banksystem.Dto.TransactionDTO;
-import banksystem.Entity.BankAccount;
-import banksystem.Entity.Transactions;
-import banksystem.Enum.TransactionsType;
-import banksystem.Repository.TransactionRepository;
+import banksystem.dto.TransactionDTO;
+import banksystem.entity.BankAccount;
+import banksystem.entity.Transactions;
+import banksystem.enums.TransactionsType;
+import banksystem.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

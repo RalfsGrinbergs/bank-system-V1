@@ -1,6 +1,6 @@
-package banksystem.Entity;
+package banksystem.entity;
 
-import banksystem.Enum.Role;
+import banksystem.enums.Role;
 import jakarta.persistence.*;
 
 @Entity

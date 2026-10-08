@@ -1,6 +1,4 @@
-package banksystem.Dto;
-
-import banksystem.Entity.User;
+package banksystem.dto;
 
 import java.math.BigDecimal;
 

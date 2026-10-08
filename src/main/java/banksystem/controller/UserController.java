@@ -1,8 +1,8 @@
-package banksystem.Controller;
+package banksystem.controller;
 
-import banksystem.Dto.ResponseUserDTO;
-import banksystem.Dto.UserDTO;
-import banksystem.Service.UserService;
+import banksystem.dto.ResponseUserDTO;
+import banksystem.dto.UserDTO;
+import banksystem.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;

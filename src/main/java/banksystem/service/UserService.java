@@ -1,11 +1,11 @@
-package banksystem.Service;
+package banksystem.service;
 
-import banksystem.Dto.ResponseUserDTO;
+import banksystem.dto.ResponseUserDTO;
 
-import banksystem.Dto.UserDTO;
-import banksystem.Entity.User;
-import banksystem.Enum.Role;
-import banksystem.Repository.UserRepository;
+import banksystem.dto.UserDTO;
+import banksystem.entity.User;
+import banksystem.enums.Role;
+import banksystem.repository.UserRepository;
 import banksystem.exceptions.UserCreatingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;

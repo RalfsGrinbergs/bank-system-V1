@@ -1,13 +1,11 @@
 package banksystem.service;
 
-import banksystem.Dto.BankAccountDTO;
-import banksystem.Entity.BankAccount;
-import banksystem.Entity.User;
-import banksystem.Enum.Role;
-import banksystem.Repository.BankAccountRepository;
-import banksystem.Repository.UserRepository;
-import banksystem.Service.BankAccountService;
-import banksystem.Service.TransactionService;
+import banksystem.dto.BankAccountDTO;
+import banksystem.entity.BankAccount;
+import banksystem.entity.User;
+import banksystem.enums.Role;
+import banksystem.repository.BankAccountRepository;
+import banksystem.repository.UserRepository;
 import banksystem.exceptions.RoleException;
 import banksystem.exceptions.TransactionException;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static banksystem.Enum.Role.CLIENT;
+import static banksystem.enums.Role.CLIENT;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;

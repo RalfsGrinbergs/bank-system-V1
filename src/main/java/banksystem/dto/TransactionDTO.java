@@ -1,6 +1,6 @@
-package banksystem.Dto;
+package banksystem.dto;
 
-import banksystem.Enum.TransactionsType;
+import banksystem.enums.TransactionsType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

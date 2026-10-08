@@ -1,10 +1,9 @@
-package banksystem.Entity;
+package banksystem.entity;
 
-import banksystem.Enum.TransactionsType;
+import banksystem.enums.TransactionsType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
