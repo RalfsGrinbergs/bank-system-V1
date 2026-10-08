@@ -33,5 +33,12 @@ public class GlobalExceptionHandler {
                     .status(400)
                     .body(e.getMessage());
         }
+        @ExceptionHandler(UserCreatingException.class)
+        public ResponseEntity<String> userCreatingError(UserCreatingException e) {
+            log.warn("User creating error {}", e.getMessage());
+            return ResponseEntity
+                    .status(400)
+                    .body(e.getMessage());
+        }
 
 }

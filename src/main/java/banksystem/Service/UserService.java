@@ -6,6 +6,7 @@ import banksystem.Dto.UserDTO;
 import banksystem.Entity.User;
 import banksystem.Enum.Role;
 import banksystem.Repository.UserRepository;
+import banksystem.exceptions.UserCreatingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
@@ -26,7 +27,7 @@ private final PasswordEncoder passwordEncoder;
     @Transactional
    public ResponseUserDTO addUser(UserDTO userToAdd) {
         if (userRepository.findByEmail(userToAdd.email()).isPresent()) {
-            throw new IllegalArgumentException("User with that email already exists"); // in future change with custom exception
+            throw new UserCreatingException("User with that email already exists");
         }
     var userToSave = new User(
             userToAdd.email(),
