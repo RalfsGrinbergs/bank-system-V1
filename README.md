@@ -99,8 +99,8 @@ Content-Type: application/json
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "password123"
+  "email": "user@example.com",
+  "password": "password123"
 }
 ```
 
@@ -122,9 +122,9 @@ Amounts are sent as a JSON number in the request body. For example, deposit `100
 
 ```bash
 curl -u user@example.com:password123 \
-  -H "Content-Type: application/json" \
-  -d "100.00" \
-  http://localhost:8080/accounts/me/deposits
+  -H "Content-Type: application/json" \
+  -d "100.00" \
+  http://localhost:8080/accounts/me/deposits
 ```
 
 Use the same request format with `/accounts/me/withdraws` to withdraw. To transfer money, include the receiving account number in the URL:
@@ -151,3 +151,4 @@ The project includes unit tests, but some tests are currently not working correc
 ## Local development notes
 
 The PostgreSQL credentials in the provided Compose configuration are for local development. The application disables CSRF protection for its REST API and uses `spring.jpa.hibernate.ddl-auto=update`; review these settings before deploying outside a local learning environment.
+ проверь редми соотвестует?
