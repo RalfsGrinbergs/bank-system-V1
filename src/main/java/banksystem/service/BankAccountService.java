@@ -66,9 +66,10 @@ public class BankAccountService {
         );
     }
     @Transactional
-    public BankAccountDTO deposit(Long accountNumber, BigDecimal sum) {
-        BankAccount accountForDeposit = bankAccountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new EntityNotFoundException("There is no account with that number " + accountNumber));
+    public BankAccountDTO deposit(String email, BigDecimal sum) {
+        BankAccount accountForDeposit = bankAccountRepository.findByUserEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "There is no account with email " + email));
         accountForDeposit.deposit(sum);
         transactionService.createTransaction(
                 null,
@@ -79,10 +80,10 @@ public class BankAccountService {
         return toDomainBankAccount(accountForDeposit);
      }
      @Transactional
-    public BankAccountDTO withdraw(Long accountNumber, BigDecimal sum) {
-        BankAccount accountForWithdraw = bankAccountRepository.findByAccountNumber(accountNumber)
+    public BankAccountDTO withdraw(String email, BigDecimal sum) {
+       BankAccount accountForWithdraw = bankAccountRepository.findByUserEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "There is no account with account number " + accountNumber));
+                        "There is no account with email " + email));
         accountForWithdraw.withdraw(sum);
         transactionService.createTransaction(
                 accountForWithdraw,
@@ -95,13 +96,13 @@ public class BankAccountService {
 
      }
      @Transactional
-     public BankAccountDTO transfer(Long accountNumber, Long receiverAccountNumber, BigDecimal sum) {
-        BankAccount sender = bankAccountRepository.findByAccountNumber(accountNumber)
+     public BankAccountDTO transfer(String email, Long recieverAccountNumber, BigDecimal sum) {
+        BankAccount sender = bankAccountRepository.findByUserEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "There is no account with account number " + accountNumber));
-        BankAccount receiver = bankAccountRepository.findByAccountNumber(receiverAccountNumber)
+                        "There is no account with email " + email));
+        BankAccount receiver = bankAccountRepository.findByAccountNumber(recieverAccountNumber)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "There is no account with account number " + receiverAccountNumber));
+                        "There is no account with email " + recieverAccountNumber));
         sender.transfer(sum, receiver);
          transactionService.createTransaction(
                  sender,

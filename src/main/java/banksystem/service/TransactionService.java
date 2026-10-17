@@ -38,10 +38,10 @@ public class TransactionService {
 
         transactionRepository.save(transaction);
     }
-    public List<TransactionDTO> getAccountTransactions(Long accountNumber) {
+    public List<TransactionDTO> getAccountTransactions(String email) {
 
        List<Transactions> transactions = transactionRepository
-               .findByFromAccount_AccountNumberOrToAccount_AccountNumber(accountNumber, accountNumber);
+               .findByFromAccount_UserEmailOrToAccount_UserEmail(email, email);
         return transactions.stream()
                 .map(this::toDomainTransactions).toList();
     }

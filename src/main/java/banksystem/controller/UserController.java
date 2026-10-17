@@ -26,7 +26,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.addUser(userToAdd));
     }
-    @GetMapping
+    @GetMapping("/admin")
     public ResponseEntity<List<ResponseUserDTO>> findAll() {
         return ResponseEntity.ok(userService.findAll());
     }

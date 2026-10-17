@@ -4,8 +4,8 @@ import banksystem.dto.TransactionDTO;
 import banksystem.service.TransactionService;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,13 +18,13 @@ public class TransactionController {
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
     }
-    @GetMapping
+    @GetMapping("/admin")
     public ResponseEntity<List<TransactionDTO>> findAll() {
         return ResponseEntity.ok(transactionService.findAll());
     }
-    @GetMapping("/{accountNumber}")
-    public ResponseEntity<List<TransactionDTO>> getAccountTransactions(@PathVariable @Positive Long accountNumber) {
-        return ResponseEntity.ok(transactionService.getAccountTransactions(accountNumber));
+    @GetMapping("/me")
+    public ResponseEntity<List<TransactionDTO>> getAccountTransactions(Authentication authentication) {
+        return ResponseEntity.ok(transactionService.getAccountTransactions(authentication.getName()));
     }
 
 }
