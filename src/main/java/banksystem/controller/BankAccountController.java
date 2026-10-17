@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -21,18 +22,19 @@ private final BankAccountService bankAccountService;
         this.bankAccountService = bankAccountService;
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<BankAccountDTO> createAccount(@PathVariable @Positive Long id) {
+    @PostMapping("/me")
+    public ResponseEntity<BankAccountDTO> createAccount(Authentication authentication) {
+        String email = authentication.getName();
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(bankAccountService.createAccount(id));
+                .body(bankAccountService.createAccount(email));
     }
     @GetMapping
     public ResponseEntity<List<BankAccountDTO>> findAll() {
         return ResponseEntity.ok(bankAccountService.findAll());
     }
-    @GetMapping("/{accountNumber}")
-    public ResponseEntity<BankAccountDTO> findByAccountNumber(@PathVariable @Positive Long accountNumber) {
-        return ResponseEntity.ok(bankAccountService.findByNumber(accountNumber));
+    @GetMapping("/me")
+    public ResponseEntity<BankAccountDTO> findByUser(Authentication authentication) {
+        return ResponseEntity.ok(bankAccountService.findByUser(authentication.getName()));
     }
     @PostMapping("/{accountNumber}/deposits")
     public ResponseEntity<BankAccountDTO> deposit(

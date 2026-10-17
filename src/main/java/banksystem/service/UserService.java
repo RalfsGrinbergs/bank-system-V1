@@ -48,9 +48,9 @@ private final PasswordEncoder passwordEncoder;
     return users.stream()
             .map(this::toDomainUser).toList();
    }
-    public ResponseUserDTO findById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("There is no user with that id" + id));
+    public ResponseUserDTO findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("There is no user with that email" + email));
         return toDomainUser(user);
     }
    private ResponseUserDTO toDomainUser(User user) {

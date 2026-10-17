@@ -27,9 +27,9 @@ public class BankAccountService {
         this.transactionService = transactionService;
     }
     @Transactional
-    public BankAccountDTO createAccount(Long id ) {
+    public BankAccountDTO createAccount(String email ) {
         var accountNumber = new Random().nextLong(10_000, 100_000);
-        User userForAccount = userRepository.findById(id)
+        User userForAccount = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User is not created"));
 
         if(!(userForAccount.getRole() == Role.USER)) {
@@ -50,10 +50,11 @@ public class BankAccountService {
         return accounts.stream()
                 .map(this::toDomainBankAccount).toList();
     }
-    public BankAccountDTO findByNumber(Long accountNumber) {
-        BankAccount account = bankAccountRepository.findByAccountNumber(accountNumber)
+    public BankAccountDTO findByUser(String email) {
+
+        BankAccount account = bankAccountRepository.findByUserEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "There is no account with account number " + accountNumber));
+                        "There is no account with email " + email));
         return toDomainBankAccount(account);
     }
     private BankAccountDTO toDomainBankAccount(BankAccount bankAccount) {

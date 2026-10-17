@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,9 +30,11 @@ public class UserController {
     public ResponseEntity<List<ResponseUserDTO>> findAll() {
         return ResponseEntity.ok(userService.findAll());
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseUserDTO> findById(@PathVariable @Positive Long id){
-        return ResponseEntity.ok(userService.findById(id));
+
+    @GetMapping("/me")
+    public ResponseEntity<ResponseUserDTO> findByEmail(Authentication authentication){
+        String email = authentication.getName();
+        return ResponseEntity.ok(userService.findByEmail(email));
     }
 
 }
