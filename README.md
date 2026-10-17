@@ -1,14 +1,15 @@
 # Bank System API
 
-A learning project that provides a REST API for creating bank accounts, making deposits and withdrawals, transferring money, and viewing transaction history. Built with Java 21, Spring Boot, Spring Data JPA, and PostgreSQL.
+A learning project that provides a REST API for registering users, creating bank accounts, making deposits and withdrawals, transferring money, and viewing transaction history. Built with Java 21, Spring Boot, Spring Data JPA, Spring Security, and PostgreSQL.
 
 ## Features
 
-- Register users and create a bank account for a user
+- Register users and create one bank account per user
 - Deposit, withdraw, and transfer money
-- View accounts and transaction history
-- Validate user input and amounts
-- Handle missing users/accounts, role violations, and rejected transactions
+- View personal account and transaction history
+- Provide admin-only endpoints for listing users, accounts, and transactions
+- Validate registration data, account numbers, and transaction amounts
+- Hash passwords with BCrypt
 - Explore the API with Swagger UI
 
 ## Requirements
@@ -18,29 +19,36 @@ A learning project that provides a REST API for creating bank accounts, making d
 
 ## Run locally
 
-Clone the repository and open its root directory. Start PostgreSQL:
+Clone the repository, open its root directory, and start PostgreSQL:
 
 ```bash
 docker compose up -d
 ```
 
-The Compose file starts the database only. Run the Spring Boot application locally with the Maven Wrapper.
+The Compose file starts the database only. Before starting the application, set the password for the initial administrator. `ADMIN_EMAIL` is optional and defaults to `admin@example.com`.
+Use a unique password for your local administrator account. Do not use real or production credentials in this learning project, and never commit passwords or other secrets to the repository.
 
-On Windows:
+On Windows PowerShell:
 
 ```powershell
+$env:ADMIN_PASSWORD = "replace-with-a-local-password"
+# Optional:
+$env:ADMIN_EMAIL = "admin@example.com"
 .\mvnw.cmd spring-boot:run
 ```
 
 On macOS/Linux:
 
 ```bash
+export ADMIN_PASSWORD='replace-with-a-local-password'
+# Optional:
+export ADMIN_EMAIL='admin@example.com'
 ./mvnw spring-boot:run
 ```
 
 The API runs at `http://localhost:8080`. Swagger UI is at `http://localhost:8080/swagger-ui/index.html`.
 
-The database connection settings are in `src/main/resources/application.properties` and match the local PostgreSQL service in `docker-compose.yml`. Hibernate updates the schema automatically for local development.
+The database connection settings in `src/main/resources/application.properties` match the local PostgreSQL service in `docker-compose.yml`. Hibernate updates the schema automatically for local development.
 
 To stop PostgreSQL:
 
@@ -50,26 +58,42 @@ docker compose down
 
 The database volume persists between runs. To remove it and all local database data, use `docker compose down -v`.
 
+## Authentication and roles
+
+The API uses HTTP Basic authentication. User registration and Swagger UI are public. All other API endpoints require authentication; the `/admin` endpoints require the `ADMIN` role.
+
+New registrations receive the `USER` role. After creating an account with `POST /accounts/me`, the user's role becomes `CLIENT`. A user can create only one account.
+
+At startup, the application creates an administrator using `ADMIN_EMAIL` and `ADMIN_PASSWORD` if that email is not already in the database. The password is stored as a BCrypt hash. If the account already exists, changing the environment variables does not update its existing credentials.
+Mostly you will get a window with authentication, but if not then:
+Send Basic credentials with protected requests. For example:
+
+```bash
+curl -u user@example.com:password123 http://localhost:8080/accounts/me
+```
+
 ## API endpoints
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `POST` | `/users` | Register a user |
-| `GET` | `/users` | List users |
-| `GET` | `/users/{id}` | Find a user by ID |
-| `POST` | `/accounts/{userId}` | Create an account for a user |
-| `GET` | `/accounts` | List accounts |
-| `GET` | `/accounts/{accountNumber}` | Find an account |
-| `POST` | `/accounts/{accountNumber}/deposits` | Deposit money |
-| `POST` | `/accounts/{accountNumber}/withdraws` | Withdraw money |
-| `POST` | `/accounts/{accountNumber}/transfer/{receiverAccountNumber}` | Transfer money |
-| `GET` | `/transactions` | List all transactions |
-| `GET` | `/transactions/{accountNumber}` | List transactions for an account |
+| Method | Endpoint | Description | Access |
+| --- | --- | --- | --- |
+| `POST` | `/users/registration` | Register a user | Public |
+| `GET` | `/users/me` | Get the authenticated user's profile | Authenticated |
+| `GET` | `/users/admin` | List users | Admin |
+| `POST` | `/accounts/me` | Create an account for the authenticated user | Authenticated |
+| `GET` | `/accounts/me` | Get the authenticated user's account | Authenticated |
+| `POST` | `/accounts/me/deposits` | Deposit money | Authenticated |
+| `POST` | `/accounts/me/withdraws` | Withdraw money | Authenticated |
+| `POST` | `/accounts/me/transfer/{receiverAccountNumber}` | Transfer money to another account | Authenticated |
+| `GET` | `/accounts/admin` | List all accounts | Admin |
+| `GET` | `/transactions/me` | Get the authenticated user's transactions | Authenticated |
+| `GET` | `/transactions/admin` | List all transactions | Admin |
 
-### Register a user
+## Register a user
+
+Registration is public:
 
 ```http
-POST /users
+POST /users/registration
 Content-Type: application/json
 ```
 
@@ -80,50 +104,50 @@ Content-Type: application/json
 }
 ```
 
-The response contains the generated user ID and role. Use that ID in `POST /accounts/{userId}` to create an account.
+The response contains the generated user ID, email, and role. Use the same email and password for HTTP Basic authentication when calling protected endpoints.
 
-### Deposit money
+## Create an account
 
-Amounts are sent as a JSON number in the request body:
+An authenticated user with the `USER` role can create one account:
 
-```http
-POST /accounts/12345/deposits
-Content-Type: application/json
+```bash
+curl -u user@example.com:password123 -X POST http://localhost:8080/accounts/me
 ```
 
-```json
-100.00
+The account starts with a zero balance. After creation, the user's role changes to `CLIENT`.
+
+## Deposit, withdraw, and transfer
+
+Amounts are sent as a JSON number in the request body. For example, deposit `100.00`:
+
+```bash
+curl -u user@example.com:password123 \
+  -H "Content-Type: application/json" \
+  -d "100.00" \
+  http://localhost:8080/accounts/me/deposits
 ```
 
-The withdrawal and transfer endpoints use the same amount format. Amounts must be positive and support up to 15 integer digits and 2 decimal places.
+Use the same request format with `/accounts/me/withdraws` to withdraw. To transfer money, include the receiving account number in the URL:
+
+```text
+POST /accounts/me/transfer/{receiverAccountNumber}
+```
+
+Amounts must be positive and support up to 15 integer digits and 2 decimal places.
+## Tests
+
+The project includes unit tests, but some tests are currently not working correctly due to recent code changes. The tests will be updated and fixed soon.
 
 ## Validation and errors
 
-- Registration requires a valid email and a password between 8 and 128 characters. The user ID must be omitted or `null`.
-- User IDs and account numbers in path parameters must be positive.
-- Deposits, withdrawals, and transfers reject non-positive amounts, insufficient funds, and transfers to the same account.
-- Missing users or accounts return `404 Not Found`; role violations return `403 Forbidden`; rejected transactions return `400 Bad Request`.
+- Registration requires a valid email and a password between 8 and 128 characters.
+- Account numbers in path parameters must be positive.
+- Deposits, withdrawals, and transfers reject non-positive amounts; withdrawals and transfers also reject amounts greater than the available balance.
+- Transfers to the same account are rejected.
+- Missing users or accounts return `404 Not Found`.
+- Invalid input and rejected transactions return `400 Bad Request`.
+- Requests without valid credentials return `401 Unauthorized`; requests without the required role return `403 Forbidden`.
 
-## Tests
+## Local development notes
 
-Start PostgreSQL first, then run:
-
-On Windows:
-
-```powershell
-.\mvnw.cmd test
-```
-
-On macOS/Linux:
-
-```bash
-./mvnw test
-```
-
-## Security status
-
-Passwords are hashed with BCrypt before being stored in the database. Authentication and authorization have not been implemented yet.
-
-This project is for local learning only; do not use real credentials or expose it publicly with real data.
-
-**Planned:** Authentication and authorization with Spring Security.
+The PostgreSQL credentials in the provided Compose configuration are for local development. The application disables CSRF protection for its REST API and uses `spring.jpa.hibernate.ddl-auto=update`; review these settings before deploying outside a local learning environment.
