@@ -10,13 +10,16 @@ import banksystem.exceptions.UserCreatingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 private final UserRepository userRepository;
 private final PasswordEncoder passwordEncoder;
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -56,5 +59,16 @@ private final PasswordEncoder passwordEncoder;
             user.getEmail(),
             user.getRole()
     );
+   }
+   @Override
+   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User with that email not found"));
+        return org.springframework.security.core.userdetails.User
+                .builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .roles(user.getRole().name())
+                .build();
    }
 }
