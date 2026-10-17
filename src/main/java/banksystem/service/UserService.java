@@ -10,6 +10,7 @@ import banksystem.exceptions.UserCreatingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,6 +45,7 @@ private final PasswordEncoder passwordEncoder;
 
    }
    public List<ResponseUserDTO> findAll() {
+
     List<User> users = userRepository.findAll();
     return users.stream()
             .map(this::toDomainUser).toList();
@@ -71,4 +73,5 @@ private final PasswordEncoder passwordEncoder;
                 .roles(user.getRole().name())
                 .build();
    }
+
 }
