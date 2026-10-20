@@ -25,26 +25,25 @@ Clone the repository, open its root directory, and start PostgreSQL:
 docker compose up -d
 ```
 
-The Compose file starts the database only. Before starting the application, set the password for the initial administrator. `ADMIN_EMAIL` is optional and defaults to `admin@example.com`.
-Use a unique password for your local administrator account. Do not use real or production credentials in this learning project, and never commit passwords or other secrets to the repository.
+The Compose file starts the database only. Before starting the application, set the password for the initial administrator. ADMIN_EMAIL is optional and defaults to admin@example.com. Use a unique password for your local administrator account. Do not use real or production credentials in this learning project, and never commit passwords or other secrets to the repository.
 
 On Windows PowerShell:
 
-```powershell
 $env:ADMIN_PASSWORD = "replace-with-a-local-password"
 # Optional:
 $env:ADMIN_EMAIL = "admin@example.com"
-.\mvnw.cmd spring-boot:run
-```
+
+.\mvnw.cmd "-Dmaven.test.skip=true" spring-boot:run
 
 On macOS/Linux:
 
-```bash
 export ADMIN_PASSWORD='replace-with-a-local-password'
 # Optional:
 export ADMIN_EMAIL='admin@example.com'
-./mvnw spring-boot:run
-```
+
+./mvnw -Dmaven.test.skip=true spring-boot:run
+
+Note: Tests are currently outdated and need to be updated to match recent application changes. The command above skips both test compilation and execution; it does not fix the tests.
 
 The API runs at `http://localhost:8080`. Swagger UI is at `http://localhost:8080/swagger-ui/index.html`.
 
@@ -99,8 +98,8 @@ Content-Type: application/json
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "password123"
+  "email": "user@example.com",
+  "password": "password123"
 }
 ```
 
@@ -122,9 +121,9 @@ Amounts are sent as a JSON number in the request body. For example, deposit `100
 
 ```bash
 curl -u user@example.com:password123 \
-  -H "Content-Type: application/json" \
-  -d "100.00" \
-  http://localhost:8080/accounts/me/deposits
+  -H "Content-Type: application/json" \
+  -d "100.00" \
+  http://localhost:8080/accounts/me/deposits
 ```
 
 Use the same request format with `/accounts/me/withdraws` to withdraw. To transfer money, include the receiving account number in the URL:
@@ -151,3 +150,4 @@ The project includes unit tests, but some tests are currently not working correc
 ## Local development notes
 
 The PostgreSQL credentials in the provided Compose configuration are for local development. The application disables CSRF protection for its REST API and uses `spring.jpa.hibernate.ddl-auto=update`; review these settings before deploying outside a local learning environment.
+ проверь редми соотвестует?
