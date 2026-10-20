@@ -38,7 +38,7 @@ public class UserServiceTest {
 
     }
     @Test
-    void findById() {
+    void findByEmail() {
         UserRepository userRepository = mock(UserRepository.class);
         PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
         UserService userService = new UserService(userRepository, passwordEncoder);
@@ -49,23 +49,24 @@ public class UserServiceTest {
         );
         userToFind.setId(1L);
 
-        when(userRepository.findById(1L))
+        when(userRepository.findByEmail(userToFind.getEmail()))
                 .thenReturn(Optional.of(userToFind));
-        ResponseUserDTO userDTO = userService.findById(1L);
+
+        ResponseUserDTO userDTO = userService.findByEmail(userToFind.getEmail());
         assertEquals("email@example.com", userDTO.email());
 
     }
     @Test
-    void findByIdNotFound() {
+    void findByEmailNotFound() {
         UserRepository userRepository = mock(UserRepository.class);
         PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
         UserService userService = new UserService(userRepository, passwordEncoder);
 
-        when(userRepository.findById(2L))
+        when(userRepository.findByEmail("example@gmail.com"))
                 .thenReturn(Optional.empty());
         assertThrows(
     EntityNotFoundException.class,
-                () -> userService.findById(2L)
+                () -> userService.findByEmail("example@gmail.com")
         );
     }
 }

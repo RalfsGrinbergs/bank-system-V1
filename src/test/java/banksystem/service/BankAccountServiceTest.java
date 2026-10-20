@@ -34,11 +34,11 @@ public class BankAccountServiceTest {
                 Role.USER
         );
         user.setId(1L);
-        when(userRepository.findById(1L))
+        when(userRepository.findByEmail(user.getEmail()))
                 .thenReturn(Optional.of(user));
         when(bankAccountRepository.save(any(BankAccount.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
-        BankAccountDTO add = bankAccountService.createAccount(user.getId());
+        BankAccountDTO add = bankAccountService.createAccount(user.getEmail());
         assertEquals("example@gmail.com", add.userEmail());
 
     }
@@ -54,16 +54,16 @@ public class BankAccountServiceTest {
                 CLIENT
         );
         user.setId(1L);
-        when(userRepository.findById(1L))
+        when(userRepository.findByEmail(user.getEmail()))
                 .thenReturn(Optional.of(user));
 
         assertThrows(
             RoleException.class,
-                () -> bankAccountService.createAccount(user.getId())
+                () -> bankAccountService.createAccount(user.getEmail())
         );
     }
     @Test
-    void findByNumber() {
+    void findByEmail() {
         UserRepository userRepository = mock(UserRepository.class);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         TransactionService transactionService = mock(TransactionService.class);
@@ -73,24 +73,23 @@ public class BankAccountServiceTest {
         BankAccount bankAccount= new BankAccount(
                 user, 23333L
         );
-        when(bankAccountRepository.findByAccountNumber(23333L))
+        when(bankAccountRepository.findByUserEmail(user.getEmail()))
                 .thenReturn(Optional.of(bankAccount));
-        BankAccountDTO bankAccountDTO = bankAccountService.findByNumber(23333L);
+        BankAccountDTO bankAccountDTO = bankAccountService.findByUser(user.getEmail());
         assertEquals(23333L, bankAccountDTO.accountNumber());
         assertEquals("email@example.com", bankAccountDTO.userEmail());
     }
     @Test
-    void findByNumberNotFound() {
+    void findByEmailNotFound() {
         UserRepository userRepository = mock(UserRepository.class);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         TransactionService transactionService = mock(TransactionService.class);
         BankAccountService bankAccountService = new BankAccountService(bankAccountRepository, userRepository, transactionService);
-        when(bankAccountRepository.findByAccountNumber(23333L))
+        when(bankAccountRepository.findByUserEmail("example@gmail.com"))
                 .thenReturn(Optional.empty());
         assertThrows(
                 EntityNotFoundException.class,
-                () -> bankAccountService.findByNumber(23333L)
-        );
+                () -> bankAccountService.findByUser("example@gmail.com"));
     }
 
     @Test
@@ -108,16 +107,17 @@ public class BankAccountServiceTest {
         receiver.setId(2L);
         sender.deposit(new BigDecimal("100.00"));
 
-        when(bankAccountRepository.findByAccountNumber(11111L)).thenReturn(Optional.of(sender));
+        when(bankAccountRepository.findByUserEmail(senderUser.getEmail())).thenReturn(Optional.of(sender));
         when(bankAccountRepository.findByAccountNumber(22222L)).thenReturn(Optional.of(receiver));
 
         BigDecimal amount = new BigDecimal("25.00");
-        BankAccountDTO result = bankAccountService.transfer(11111L, 22222L, amount);
+        BankAccountDTO result = bankAccountService.transfer(senderUser.getEmail(), 22222L, amount);
 
         assertEquals(new BigDecimal("75.00"), sender.getBalance());
         assertEquals(new BigDecimal("25.00"), receiver.getBalance());
         assertEquals(11111L, result.accountNumber());
         assertEquals("sender@example.com", result.userEmail());
+
     }
 
     @Test
@@ -132,11 +132,11 @@ public class BankAccountServiceTest {
         account.setId(1L);
         account.deposit(new BigDecimal("100.00"));
 
+        when(bankAccountRepository.findByUserEmail(user.getEmail())).thenReturn(Optional.of(account));
         when(bankAccountRepository.findByAccountNumber(11111L)).thenReturn(Optional.of(account));
-
         assertThrows(
                 TransactionException.class,
-                () -> bankAccountService.transfer(11111L, 11111L, new BigDecimal("25.00"))
+                () -> bankAccountService.transfer(user.getEmail(), 11111L, new BigDecimal("25.00"))
         );
 
         assertEquals(new BigDecimal("100.00"), account.getBalance());
