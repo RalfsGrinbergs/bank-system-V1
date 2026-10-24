@@ -2,6 +2,7 @@ package banksystem.controller;
 
 import banksystem.dto.TransactionDTO;
 import banksystem.service.TransactionService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
+@SecurityRequirement(name = "bearerAuth")
 public class TransactionController {
     private final TransactionService transactionService;
     public TransactionController(TransactionService transactionService) {

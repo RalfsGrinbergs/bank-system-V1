@@ -2,6 +2,7 @@ package banksystem.controller;
 
 import banksystem.dto.BankAccountDTO;
 import banksystem.service.BankAccountService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
+@SecurityRequirement(name = "bearerAuth")
 public class BankAccountController {
 private final BankAccountService bankAccountService;
 
